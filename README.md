@@ -8,6 +8,8 @@ Arunz System
   4. Change detail's connect database in /basic/config/db.php to our data
   5. Run and enjoy !
 
+
+
 2. Capabilities:
   In this application we can (in shortcut):
   1. Plan marathons through the calendar (manage reminder's, move events on calendar and more)
