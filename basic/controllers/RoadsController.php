@@ -81,18 +81,19 @@ class RoadsController extends Controller
      */
 
 
-    public function actionAddroad(){
-
+    public function actionAddroad()
+	{
         $model = new Marathons();
         if ($model->load(Yii::$app->request->post()) && $model->save() ) {
-            return $this->redirect('index.php?r=roads%2Findex');// goHome();
+            return $this->redirect('index.php?r=roads%2Findex');
         }
         return $this->render('addroad', [
             'model' => $model,
         ]);
     }
 
-    public function actionIndex(){
+    public function actionIndex()
+	{
         if(Yii::$app->user->isGuest){
             return $this->goBack();
         }
@@ -105,12 +106,14 @@ class RoadsController extends Controller
         ]);
     }
 
-    public function actionDelete($id) {
+    public function actionDelete(int $id) 
+	{
         Marathons::deleteAll(['id'=>$id]);
         return $this->redirect('index.php?r=roads%2Findex');
     }
 
-    public function actionUpdate($id) {
+    public function actionUpdate(int $id) 
+	{
 
         $model=Marathons::findOne(['id'=>$id]);
 

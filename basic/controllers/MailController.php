@@ -72,36 +72,26 @@ class MailController extends Controller
     public $send_to;
 
 
-    public function actionIndex(){
+    public function actionIndex()
+	{
 
         try {
-            $odbiorca=Yii::$app->request->get('odbiorca');
+            $odbiorca = Yii::$app->request->get('odbiorca');
             $tytul = Yii::$app->request->get('tytul');
-            $od='info@arunz.eu';
+            $od = 'info@arunz.eu';
 
-            $kwota=Yii::$app->request->get('kwota');
-            $zaznaczony_bieg=Yii::$app->request->get('zaznaczony_bieg');
+            $kwota = Yii::$app->request->get('kwota');
+            $zaznaczony_bieg = Yii::$app->request->get('zaznaczony_bieg');
 
-            $email=Yii::$app->request->get('email');
+            $email = Yii::$app->request->get('email');
 
             $login = 'Michał Hudaszek';
-            //$haslo = User::get_user_by_email($email);
 
-            $odbiorca=Yii::$app->request->get('odbiorca');
+            $odbiorca = Yii::$app->request->get('odbiorca');
             $tytul = Yii::$app->request->get('tytul');
 
-            $this->WyslijMajlPrzypominajacy($odbiorca,$login,$tytul,$kwota,$zaznaczony_bieg);
+            $this->WyslijMajlPrzypominajacy($odbiorca, $login, $tytul, $kwota, $zaznaczony_bieg);
 
-           /* echo $tytul;
-            echo $odbiorca;
-            return Yii::$app->mailer->compose()
-                ->setCharset("UTF-8")
-                ->setFrom($od)
-                ->setTo($odbiorca)
-                ->setSubject($tytul)
-                ->setTextBody('Plain text content')
-                ->setHtmlBody('<b>HTML content</b>')
-                ->send();*/
         } catch(Exception $e){
             return $e->getMessage();
         }
@@ -110,40 +100,34 @@ class MailController extends Controller
 
     public function WyslijMajlPrzypominajacy($do,$login,$tytul,$kwota,$zaznaczony_bieg){
 
-        //$tytul = 'Arunz - Przypomnienie hasła';
 
         require "classes/class.phpmailer.php";
-        require "classes/class.smtp.php"; // optional, gets called from within class.phpmailer.php if not already loaded
+        require "classes/class.smtp.php"; 
 
+        $mail = new PHPMailer();
 
+        $body = $this->Tresc($do,$login,$tytul,$kwota,$zaznaczony_bieg);
 
-        $mail             = new PHPMailer();
+        $mail->IsSMTP(); 
+        $mail->SMTPDebug  = 1; 
 
-        $body             = $this->Tresc($do,$login,$tytul,$kwota,$zaznaczony_bieg);
-
-        $mail->IsSMTP(); // telling the class to use SMTP
-        $mail->SMTPDebug  = 1;                     // enables SMTP debug information (for testing)
-        // 1 = errors and messages
-        // 2 = messages only
         $mail->CharSet = "UTF-8";
-        $mail->SMTPAuth   = true;                  // enable SMTP authentication
+        $mail->SMTPAuth   = true;                  
         $mail->SMTPSecure = "tls";
 
-        $mail->Host       = "janberdy39.nazwa.pl";//"arunz.eu"; // sets the SMTP server
-        $mail->Port       = 25;                    // set the SMTP port for the GMAIL server
-        $mail->Username   = "systemarunz@arunz.eu";//"info@arunz.eu"; // SMTP account username
-        $mail->Password   = "HAkhdsA5643aghaADD";//"Iamnotcheater123";        // SMTP account password
+        $mail->Host       = "janberdy39.nazwa.pl";
+        $mail->Port       = 25;                    
+        $mail->Username   = "systemarunz@arunz.eu";
+        $mail->Password   = "HAkhdsA5643aghaADD";
 
         $mail->SetFrom('systemarunz@arunz.eu', 'ArunZ');
-        //$mail->AddReplyTo("kontakt@arunz.eu","arunz.eu");
-        $mail->Subject    = "Podsumowanie płatności";//$tytul;
+
+        $mail->Subject    = "Podsumowanie płatności";
 
         $mail->MsgHTML($body);
 
         $mail->AddAddress($do);
-        //$mail->AddBCC('janberdy39.nazwa.pl');
         $mail->AddBCC('systemarunz@arunz.eu');
-//$mail->AddBCC('maciej.stachecki@westhill.pl');
 
         if(!$mail->Send()) {
             return false;
@@ -152,11 +136,13 @@ class MailController extends Controller
         }
     }
 
-    public function Tresc($do,$login,$tytul,$kwota,$zaznaczony_bieg){
+    public function Tresc($do, $login, $tytul, $kwota, $zaznaczony_bieg)
+	{
 
-        $start=UsersOfMarathons::findOne(["id"=>$zaznaczony_bieg]);
-        $maraton=Marathons::findOne(["id"=>$start->idm]);
-        $transakcja=ListPayments::findOne("");
+        $start = UsersOfMarathons::findOne(["id" => $zaznaczony_bieg]);
+        $maraton = Marathons::findOne(["id" => $start->idm]);
+        $transakcja = ListPayments::findOne("");
+		
         $tresc = '
 	    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 	    <html>
@@ -202,16 +188,9 @@ class MailController extends Controller
 	        </body>
 	    </html>';
 
-        return $tresc ;
+        return $tresc;
     }
-
-
-
 }
-
-
-
-
 
 
 

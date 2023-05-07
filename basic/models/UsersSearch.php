@@ -65,7 +65,8 @@ class UsersSearch extends Model
             ->andFilterWhere(['like', 'from_medium', $this->from_medium])
             ->andFilterWhere(['like', 'sex', $this->sex]);
 
-        if ( ! is_null($this->join_date) && strpos($this->join_date, ' - ') !== false ) {
+        if ( ! is_null($this->join_date) && strpos($this->join_date, ' - ') !== false ) 
+		{
             list($start_date, $end_date) = explode(' - ', $this->join_date);
             $query->andFilterWhere(['between', 'join_date', $start_date." 00:00:00", $end_date." 23:59:59"]);
         }

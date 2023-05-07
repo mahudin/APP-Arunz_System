@@ -94,7 +94,8 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        if (!Yii::$app->user->isGuest) {
+        if (!Yii::$app->user->isGuest) 
+		{
             return $this->render('main');
 
         } else {
@@ -108,10 +109,12 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionOperator(){
+    public function actionOperator()
+	{
 
         $model = new Operator();
-        if ($model->load(Yii::$app->request->post()) && $model->save() ) {
+        if ($model->load(Yii::$app->request->post()) && $model->save() ) 
+		{
             return $this->goBack();
         }
         return $this->render('operator', [
@@ -121,12 +124,14 @@ class SiteController extends Controller
 
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
+        if (!Yii::$app->user->isGuest) 
+		{
             return $this->goHome();
         }
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if ($model->load(Yii::$app->request->post()) && $model->login()) 
+		{
             return $this->goBack();
         }
         return $this->render('login', [
@@ -136,7 +141,8 @@ class SiteController extends Controller
 
     public function actionRunners()
     {
-        if(Yii::$app->user->isGuest){
+        if (Yii::$app->user->isGuest)
+		{
             return $this->goBack();
         }
         $searchModel = new UsersSearch();
@@ -148,7 +154,8 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionAddroad(){
+    public function actionAddroad()
+	{
 
         $model = new Marathons();
         if ($model->load(Yii::$app->request->post()) && $model->save() ) {
@@ -159,7 +166,8 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionRoads(){
+    public function actionRoads()
+	{
         if(Yii::$app->user->isGuest){
             return $this->goBack();
         }
@@ -172,18 +180,19 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionDelete($id) {
+    public function actionDelete($id)
+	{
         Users::deleteAll(['id'=>$id]);
         return $this->redirect('index.php?r=site%2Frunners');
     }
 
-    public function actionAuth(){
-
+    public function actionAuth()
+	{
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
         require "classes/PayLaneRestClient.php";
-        $kwota=Yii::$app->request->get('kwota');
-        $card_params = array(
+        $kwota = Yii::$app->request->get('kwota');
+        $cardParams = array(
             "sale"      =>   array(
                 "amount"            =>   $kwota,
                 "currency"          =>   "PLN",
@@ -210,13 +219,10 @@ class SiteController extends Controller
             )
         );
 
-
-
         $client= new Payment("arunz","di7ce9sl");
         try {
-            //$id_authorization = $client->checkCard($card_params);
-            $id_authorization = $client->cardAuthorization($card_params);
-            $status =$id_authorization;
+            $id_authorization = $client->cardAuthorization($cardParams);
+            $status = $id_authorization;
             if ($client->isSuccess()) {
                 return
                     "Autoryzacja karty zakończyła się sukcesem ! \n ID autoryzacji: ".$status['id_authorization']." \n";
@@ -228,7 +234,8 @@ class SiteController extends Controller
     }
 
 
-    public function actionPay(){
+    public function actionPay()
+	{
 
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
@@ -246,23 +253,23 @@ class SiteController extends Controller
             "name_on_card"      =>   "John Doe",
             "ip"        =>   "127.0.0.1",
         );
-        $idu=Yii::$app->request->get('idu');
-        $idm=Yii::$app->request->get('idm');
+        $idu = Yii::$app->request->get('idu');
+        $idm = Yii::$app->request->get('idm');
 
-        $nr_card=Yii::$app->request->get('nr_card');
-        $date_card=Yii::$app->request->get('date_card');
-        $uname_card=Yii::$app->request->get('uname_card');
-        $surname_card=Yii::$app->request->get('surname_card');
-        $cvv_cvc=Yii::$app->request->get('cvv_cvc');
-        $kwota=Yii::$app->request->get('kwota');
-        $users_email=Yii::$app->request->get('users_email');
+        $nrCard = Yii::$app->request->get('nr_card');
+        $dateCard = Yii::$app->request->get('date_card');
+        $unameCard = Yii::$app->request->get('uname_card');
+        $surnameCard = Yii::$app->request->get('surname_card');
+        $cvv_cvc = Yii::$app->request->get('cvv_cvc');
+        $kwota = Yii::$app->request->get('kwota');
+        $usersEmail = Yii::$app->request->get('users_email');
 
-        $uname=Yii::$app->request->get('uname');
-        $surname=Yii::$app->request->get('surname');
+        $uname = Yii::$app->request->get('uname');
+        $surname = Yii::$app->request->get('surname');
 
-        $elements_date=explode("-",$date_card);
+        $elementsDate = explode("-", $dateCard);
 
-        $card_params = array(
+        $cardParams = array(
             "sale"      =>   array(
                 "amount"            =>   $kwota,
                 "currency"          =>   "PLN",
@@ -270,7 +277,7 @@ class SiteController extends Controller
             ),
             "customer"  =>   array(
                 "name"      =>   $uname." ".$surname,
-                "email"     =>   $users_email,
+                "email"     =>   $usersEmail,
                 "ip"        =>   "127.0.0.1",
                 "address"   =>   array(
                     "street_house"  =>   "1600 Pennsylvania Avenue Northwest",
@@ -281,39 +288,39 @@ class SiteController extends Controller
                 )
             ),
             "card"   =>   array   (
-                "card_number"       =>   $nr_card,//"4200000000000000",
-                "expiration_month"  =>   $elements_date[1],//date("m",$date_card),
-                "expiration_year"   =>   $elements_date[0],//date("y",$date_card),
-                "name_on_card"      =>   $uname_card." ".$surname_card,//"John Doe",
+                "card_number"       =>   $nrCard,//"4200000000000000",
+                "expiration_month"  =>   $elementsDate[1],//date("m",$date_card),
+                "expiration_year"   =>   $elementsDate[0],//date("y",$date_card),
+                "name_on_card"      =>   $unameCard." ".$surnameCard,//"John Doe",
                 "card_code"         =>   $cvv_cvc,//"123"
             )
         );
 
 
-        $client= new Payment("arunz","di7ce9sl");
+        $client = new Payment("arunz","di7ce9sl");
         try {
-            $id_authorization = $client->cardAuthorization($card_params);
-            $resale_params = array(
-                'id_authorization' => $id_authorization['id_authorization'],
+            $idAuthorization = $client->cardAuthorization($cardParams);
+            $resaleParams = array(
+                'id_authorization' => $idAuthorization['id_authorization'],
                 "amount"            =>   $kwota,
                 "currency"          =>   "PLN",
                 "description"       =>   "ArunZ - abonament",
             );
-            $status =$client->resaleByAuthorization($resale_params);
+            $status = $client->resaleByAuthorization($resaleParams);
 
-            $new_record= new ListPayments();
+            $new_record = new ListPayments();
             $new_record->load(
-                ['idu'=>1,'payment_id'=>$id_authorization['id_authorization'],'payment_status'=>"udany",'payment_cash'=>$kwota." zł",'datetime_payment'=>date("y-m-d h:i:s")]
+                ['idu'=> 1, 'payment_id' => $idAuthorization['id_authorization'], 'payment_status' => "udany", 'payment_cash' => $kwota." zł", 'datetime_payment' => date("y-m-d h:i:s") ]
             );
-            $new_record->idu=$idu;
-            $new_record->idm=$idm;
-            $new_record->payment_id =$id_authorization['id_authorization'];
-            $new_record->payment_status="udany";
-            $new_record->payment_cash=$kwota." zł";
-            $new_record->datetime_payment=date("y-m-d h:i:s");
+            $new_record->idu = $idu;
+            $new_record->idm = $idm;
+            $new_record->payment_id = $idAuthorization['id_authorization'];
+            $new_record->payment_status = "udany";
+            $new_record->payment_cash = $kwota." zł";
+            $new_record->datetime_payment = date("y-m-d h:i:s");
             $new_record->save();
-            //$status = $client->cardAuthorization($card_params2);
-            if ($client->isSuccess()) {
+            if ($client->isSuccess()) 
+			{
                 return
                     "Płatność karty zakończyła się sukcesem ! \n ID płatności: ".$status['id_sale']." \n";
             } else {
@@ -325,38 +332,41 @@ class SiteController extends Controller
 
     }
 
-    public function actionUpdate($id) {
-        $model=Users::findOne(['id'=>$id]);
+    public function actionUpdate(int $id) 
+	{
+        $model = Users::findOne(['id'=>$id]);
 
         $searchModel1 = new InterviewSearch();
         $dataProvid1 = $searchModel1->search(Yii::$app->request->queryParams);
 
-        $history=Interview::find()
+        $history = Interview::find()
             ->select(['id','message_title','message_content','datetime_history'])
-            ->where(['id_runner_history'=>$id]);
+            ->where(['id_runner_history' => $id]);
+			
         $historyDataProvider = new ActiveDataProvider([
             'query' => $history,
         ]);
 
-        $result_marathons=
+        $resultMarathons =
             UsersOfMarathons::find()
                 ->select(['users_of_marathons.id','idm','title','status','place','passing'])
                 ->leftJoin('marathons','users_of_marathons.idm=marathons.id')
                 ->where(['idu'=>$id]);
         $resultDataProvider = new ActiveDataProvider([
-            'query' => $result_marathons,
+            'query' => $resultMarathons,
         ]);
 
-        $payments= ListPayments::find()
+        $payments = ListPayments::find()
         ->select(['id','idu','payment_id','payment_status','payment_cash','datetime_payment'])
-        ->where(['idu'=>$id]);
+        ->where(['idu' => $id]);
 
         $listpaymentsDataProvider = new ActiveDataProvider([
             'query' => $payments,
         ]);
 
 
-        if (!empty($model) && $model->load(Yii::$app->request->post()) && $model->save()) {
+        if (!empty($model) && $model->load(Yii::$app->request->post()) && $model->save()) 
+		{
             Yii::$app->session->setFlash('kv-detail-success', 'Saved record successfully');
             Yii::$app->session->setFlash('kv-detail-warning', 'A last warning for completing all data.');
             Yii::$app->session->setFlash('kv-detail-info',
@@ -371,15 +381,16 @@ class SiteController extends Controller
         } else {
 
             return $this->render('../actions/update/runner.php',
-                ['model'=>$model,'resulter'=>$resultDataProvider,'history'=>$historyDataProvider,'model1'=>$searchModel1,'data1'=>$dataProvid1,'list'=>$listpaymentsDataProvider]);
+                ['model'=>$model,'resulter' => $resultDataProvider, 'history'=>$historyDataProvider, 'model1'=>$searchModel1, 'data1'=>$dataProvid1, 'list'=>$listpaymentsDataProvider]);
         }
     }
 
 
-    public function actionView($id) {
-        $model=Users::findOne(['id'=>$id]);
+    public function actionView($id) 
+	{
+        $model = Users::findOne(['id'=>$id]);
 
-        $history=Interview::find()
+        $history = Interview::find()
             ->select(['id','message_title','message_content','datetime_history'])
             ->where(['id_runner_history'=>$id]);
 
@@ -387,24 +398,27 @@ class SiteController extends Controller
             'query' => $history,
         ]);
 
-        $list_marathons=
+        $listMarathons =
             UsersOfMarathons::find()
                 ->select(['idm','title','status','place'])
                 ->leftJoin('marathons','users_of_marathons.idm=marathons.id')
                 ->where(['idu'=>$id]);
+				
         $listDataProvider = new ActiveDataProvider([
-            'query' => $list_marathons,
+            'query' => $listMarathons,
         ]);
 
-        $list_reminders=
+        $listReminders =
             Reminder::find()
                 ->select(['id','idu','note','datetime_reminder'])
                 ->where(['idu'=>$id]);
+				
         $reminderDataProvider = new ActiveDataProvider([
-            'query' => $list_reminders,
+            'query' => $listReminders,
         ]);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) 
+		{
             Yii::$app->session->setFlash('kv-detail-success', 'Saved record successfully');
             Yii::$app->session->setFlash('kv-detail-warning', 'A last warning for completing all data.');
             Yii::$app->session->setFlash('kv-detail-info',
@@ -413,7 +427,7 @@ class SiteController extends Controller
             return $this->redirect(['view', 'id'=>$model->id]);
         } else {
             return $this->render('../actions/view/runner.php',
-                ['model'=>$model,'result'=>$listDataProvider,'history'=>$historyDataProvider,'reminder'=>$reminderDataProvider]);
+                ['model'=>$model, 'result'=>$listDataProvider, 'history'=>$historyDataProvider, 'reminder'=>$reminderDataProvider]);
         }
     }
 
@@ -437,7 +451,8 @@ class SiteController extends Controller
     public function actionContact()
     {
         $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
+        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) 
+		{
             Yii::$app->session->setFlash('contactFormSubmitted');
 
             return $this->refresh();
@@ -457,48 +472,44 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
-    public function actionEditableDemo() {
+    public function actionEditableDemo() 
+	{
         $model = new Interview();
 
-        if (isset($_POST['hasEditable'])) {
+        if (isset($_POST['hasEditable'])) 
+		{
 
             \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-            // read your posted model attributes
             if ($model->load($_POST)) {
-                // read or convert your posted information
                 $value = $model->message_content;
 
-                // return JSON encoded output in the below format
-                return ['output'=>$value, 'message'=>''];
-
-                // alternatively you can return a validation error
-                // return ['output'=>'', 'message'=>'Validation error'];
+                return ['output' => $value, 'message'=>''];
             }
-            // else if nothing to do always return an empty JSON encoded output
-            else {
+            else 
+			{
                 return ['output'=>'', 'message'=>''];
             }
         }
 
-        // Else return to rendering a normal view
         return $this->render('view', ['model'=>$model]);
     }
 
-    public function actionAddmarathontouser(){
-        $id_trasy=Yii::$app->request->get('id_trasy');
-        $id_user=Yii::$app->request->get('id_user');
+    public function actionAddmarathontouser()
+	{
+        $idTrasy = Yii::$app->request->get('id_trasy');
+        $idUser = Yii::$app->request->get('id_user');
         try {
-            $model=new UsersOfMarathons();
-            $id_traski=$model->findAll(['idm'=>$id_trasy,'idu'=>$id_user]);
-            if(empty($id_traski)){
-                $model->idm=$id_trasy;
-                $model->idu=$id_user;
-                $model->status=1;
+            $model = new UsersOfMarathons();
+            $idTrasyMaratonu = $model->findAll(['idm' => $idTrasy, 'idu' => $idUser]);
+            if(empty($idTrasyMaratonu)){
+                $model->idm = $idTrasy;
+                $model->idu = $idUser;
+                $model->status = 1;
                 $model->load([
-                    'idm'=>$id_trasy,
-                    'idu'=>$id_user,
-                    'status'=>1,
+                    'idm' => $idTrasy,
+                    'idu' => $idUser,
+                    'status' => 1,
                 ]);
                 $model->save();
                 $model->refresh();
@@ -512,21 +523,22 @@ class SiteController extends Controller
     }
 
 
-    public function actionAddreminder(){
-        $id_operator=Yii::$app->request->get("id_operator");
-        $idu=Yii::$app->request->get('idu');
-        $note=Yii::$app->request->get('note');
-        $datetime=Yii::$app->request->get('datetime');
+    public function actionAddreminder()
+	{
+        $idOperator = Yii::$app->request->get("id_operator");
+        $idu = Yii::$app->request->get('idu');
+        $note = Yii::$app->request->get('note');
+        $datetime = Yii::$app->request->get('datetime');
         try {
             $model=new Reminder();
 
-                $model->id_operator=$id_operator;
-                $model->idu=$idu;
-                $model->note=$note;
-                $model->datetime_reminder=$datetime;
+                $model->id_operator = $idOperator;
+                $model->idu = $idu;
+                $model->note = $note;
+                $model->datetime_reminder = $datetime;
                 $model->load([
-                    'note'=>$note,
-                    'datetime'=>$datetime,
+                    'note' => $note,
+                    'datetime' => $datetime,
                 ]);
                 $model->save();
                 $model->refresh();
@@ -536,48 +548,53 @@ class SiteController extends Controller
         }
     }
 
-    public function actionDropmarathonforuser(){
-        $idks=Yii::$app->request->get('idk');
-        $model=new UsersOfMarathons();
-        foreach($idks as $idk){
-            $model::deleteAll(["id"=>$idks]);
+    public function actionDropmarathonforuser()
+	{
+        $idks = Yii::$app->request->get('idk');
+        $model = new UsersOfMarathons();
+        foreach ($idks as $idk)
+		{
+            $model::deleteAll(["id" => $idks]);
         }
         return "ok";
     }
 
-    public function actionDropinterview(){
-        $idks=Yii::$app->request->get('idk');
-        $model=new Interview();
-        foreach($idks as $idk){
-            $model::deleteAll(["id"=>$idks]);
+    public function actionDropinterview()
+	{
+        $idks = Yii::$app->request->get('idk');
+        $model = new Interview();
+        foreach($idks as $idk)
+		{
+            $model::deleteAll(["id" => $idks]);
         }
         return "ok";
     }
 
-    public function actionAddinterview(){
-        $id=Yii::$app->request->get('id');
+    public function actionAddinterview()
+	{
+        $id = Yii::$app->request->get('id');
 
-        $title=Yii::$app->request->get('message_title');
-        $content=Yii::$app->request->get('message_content');
+        $title = Yii::$app->request->get('message_title');
+        $content = Yii::$app->request->get('message_content');
 
-        $dates= new \DateTime();
-        $datetime =$dates->format("Y-m-d h:i:s");
-        $operator_id=Yii::$app->request->get('id_operator_history');
-        $user_id=Yii::$app->request->get('id_runner_history');
+        $dates = new \DateTime();
+        $datetime = $dates->format("Y-m-d h:i:s");
+        $operatorId = Yii::$app->request->get('id_operator_history');
+        $userId = Yii::$app->request->get('id_runner_history');
 
-        $model=new Interview();
-        $model->id_operator_history=$operator_id;
-        $model->id_runner_history=$user_id;
-        $model->datetime_history=$datetime;
-        $model->message_title=$title;
-        $model->message_content=$content;
+        $model = new Interview();
+        $model->id_operator_history = $operatorId;
+        $model->id_runner_history = $userId;
+        $model->datetime_history = $datetime;
+        $model->message_title = $title;
+        $model->message_content = $content;
 
         $model->load([
-            'id_operator_history'=>$operator_id,
-            'id_runner_history'=>$user_id,
-            'datetime_history'=>$datetime,
-            'message_title'=>$title,
-            'message_content'=>$content,
+            'id_operator_history' => $operatorId,
+            'id_runner_history' => $userId,
+            'datetime_history' => $datetime,
+            'message_title' => $title,
+            'message_content' => $content,
         ]);
         $model->save();
         $model->refresh();
@@ -585,44 +602,49 @@ class SiteController extends Controller
         return "ok";
     }
 
-    public function actionChangedatereminder(){
-        $id=Yii::$app->request->post('id');
-        $date=Yii::$app->request->post('datetimer');
-        Reminder::updateAll(['datetime_reminder'=>$date],['id'=>$id]);
+    public function actionChangedatereminder()
+	{
+        $id = Yii::$app->request->post('id');
+        $date = Yii::$app->request->post('datetimer');
+        Reminder::updateAll(['datetime_reminder' => $date],['id' => $id]);
 
         return "ok";
     }
 
-    public function actionChangenotereminder(){
-        $id=Yii::$app->request->post('id');
-        $title=Yii::$app->request->post('note');
-        Reminder::updateAll(['note'=>$title],['id'=>$id]);
+    public function actionChangenotereminder()
+	{
+        $id = Yii::$app->request->post('id');
+        $title = Yii::$app->request->post('note');
+        Reminder::updateAll(['note' => $title],['id' => $id]);
 
         return "ok";
     }
 
-    public function actionDeletereminder(){
-        $id=Yii::$app->request->post('id');
-        Reminder::deleteAll(['id'=>$id]);
+    public function actionDeletereminder()
+	{
+        $id = Yii::$app->request->post('id');
+        Reminder::deleteAll(['id' => $id]);
 
         return "ok";
     }
 
-    public function actionJsoncalendar(){
-
+    public function actionJsoncalendar()
+	{
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        $times = Reminder::find()->select(['id','idu','id_operator','note','datetime_reminder'])->all();
+        $times = Reminder::find()->select(['id', 'idu', 'id_operator', 'note', 'datetime_reminder'])->all();
 
         $events = array();
 
-        foreach ($times as $time){
+        foreach ($times as $time)
+		{
             $Event = new \yii2fullcalendar\models\Event();
             $Event->id = $time->id;
             $Event->title = $time->note;
             $Event->start = $time->datetime_reminder;
-            $Event->startEditable=true;
-            if($time->idu==0){
+            $Event->startEditable = true;
+            if ($time->idu == 0)
+			{
                 $Event->backgroundColor="red";
             }
             $events[] = $Event;
@@ -631,17 +653,16 @@ class SiteController extends Controller
         return $events;
     }
 
-    public function actionCreatepdf(){
-        $id=Yii::$app->request->get('id');
-        $payment=ListPayments::findOne(['id'=>$id]);
+    public function actionCreatepdf()
+	{
+        $id = Yii::$app->request->get('id');
+        $payment = ListPayments::findOne(['id' => $id]);
 
-        $content = $this->renderPartial('pdf/_reportView',['payment'=>$payment]);
+        $content = $this->renderPartial('pdf/_reportView', ['payment' => $payment]);
 
         $pdf = Yii::$app->pdf;
         $pdf->content = $content;
 
-        //print_r($content);
-        //print_r($payment);
         return $pdf->render();
     }
 }
